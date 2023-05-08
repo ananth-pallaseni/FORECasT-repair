@@ -28,9 +28,10 @@ def _predict_from_features(features, weight_matrix, ko):
         'I1_G','I2_GA','I2_GT','I2_GG','I2_GC',
         'I1_C','I2_CA','I2_CT','I2_CG','I2_CC',
     ]].idxmax(axis=1).mask(~y.index.str.contains('I'), '')
+    inserted_seq = [s.split('_')[-1] for s in inserted_seq]
     y = pd.DataFrame({
         'Mutation': y.index,
-        'Inserted Sequence': inserted_seq.values,
+        'Inserted Sequence': inserted_seq,
         'Prediction': y.values,
     })
     return y
