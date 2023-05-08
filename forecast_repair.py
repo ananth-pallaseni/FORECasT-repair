@@ -22,6 +22,17 @@ def _predict_from_features(features, weight_matrix, ko):
     b = weight_matrix.loc[ko].values[-1]
     y = (features * a).sum(axis=1) + b
     y = np.exp(y) / np.exp(y).sum()
+    inserted_seq = df[[
+        'I1_A','I2_AA','I2_AT','I2_AG','I2_AC',
+        'I1_T','I2_TA','I2_TT','I2_TG','I2_TC',
+        'I1_G','I2_GA','I2_GT','I2_GG','I2_GC',
+        'I1_C','I2_CA','I2_CT','I2_CG','I2_CC',
+    ]].idxmax(axis=1).mask(~y.index.str.contains('I'), '')
+    y = pd.DataFrame({
+        'Mutation': y.index
+        'Inserted Sequence': inserted_seq.values,
+        'Prediction': y.values,
+    })
     return y
 
 # Generate feaetures for a set of possible mutations given a target sequence and the index of the PAM in that targete.
