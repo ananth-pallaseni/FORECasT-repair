@@ -22,7 +22,7 @@ def _predict_from_features(features, weight_matrix, ko):
     b = weight_matrix.loc[ko].values[-1]
     y = (features * a).sum(axis=1) + b
     y = np.exp(y) / np.exp(y).sum()
-    inserted_seq = df[[
+    inserted_seq = features[[
         'I1_A','I2_AA','I2_AT','I2_AG','I2_AC',
         'I1_T','I2_TA','I2_TT','I2_TG','I2_TC',
         'I1_G','I2_GA','I2_GT','I2_GG','I2_GC',
