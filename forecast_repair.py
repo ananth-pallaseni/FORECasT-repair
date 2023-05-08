@@ -29,7 +29,7 @@ def _predict_from_features(features, weight_matrix, ko):
         'I1_C','I2_CA','I2_CT','I2_CG','I2_CC',
     ]].idxmax(axis=1).mask(~y.index.str.contains('I'), '')
     y = pd.DataFrame({
-        'Mutation': y.index
+        'Mutation': y.index,
         'Inserted Sequence': inserted_seq.values,
         'Prediction': y.values,
     })
