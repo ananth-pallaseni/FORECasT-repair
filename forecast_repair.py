@@ -1,4 +1,5 @@
 import os
+import random
 from subprocess import check_call
 import numpy as np
 import pandas as pd 
@@ -36,20 +37,22 @@ def _predict_from_features(features, weight_matrix, ko):
     })
     return y
 
-# Generate feaetures for a set of possible mutations given a target sequence and the index of the PAM in that targete.
+# Generate features for a set of possible mutations given a target sequence and the index of the PAM in that targete.
 def generate_forecast_features(target_seq, pam_idx, is_reverse=False):
-    tmp_genindels_file = f'tmp_genindels_{target_seq[:10]}.txt' 
-    tmp_features_file = f'tmp_features_{target_seq[:10]}.txt'
+    random_id = random.randint(0, 10000)
+    tmp_genindels_file = f'tmp_genindels_{random_id}.txt' 
+    tmp_features_file = f'tmp_features_{random_id}.txt'
     try:
         # Check that the indelgen program exists
         indelgen_path = os.environ.get("INDELGENTARGET_EXE")
 
         if (indelgen_path is None) or (not os.path.exists(indelgen_path)):
-            raise ValueError('INDELGENTARGET_EXE environment variable not set or path does not exist. Set the environment variable INDELGENTARGET_EXE to point to the indelgen program.')
+            raise ValueError('INDELGENTARGET_EXE environment variable not set or path does not exist. Set the environment variable INDELGENTARGET_EXE to point to the indelgentarget program.')
 
         # Generate temporary file containing possible mutations
         cmd = os.environ["INDELGENTARGET_EXE"] + ' %s %d %s' % (target_seq, pam_idx, tmp_genindels_file)
         check_call(cmd.split())
+        assert os.path.exists(tmp_genindels_file)
 
         # Generate temporary feature file 
         calculateFeaturesForGenIndelFile(tmp_genindels_file, target_seq, pam_idx-3, is_reverse=is_reverse, out_file=tmp_features_file)
